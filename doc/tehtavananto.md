@@ -83,13 +83,13 @@ Tässä tehtävässä olisi tarkoitus toteuttaa yksinkertainen tehtävänjakoalg
 
 Itse tehtäväkohtaisessa `main`-metodissa, päivitä metodia siten, että allokoijalta saadut **kaikki** kaksi tehtävää jaetaan erillisille säikeille, **kaikki** säikeet käynnistetään ja **kaikkia** säikeitä odotetaan valmistumaan. Säikeiden valmistuttua, kerää **kaikki** arvioidut palautukset **kaikista** tehtävistä. Vaikka toistaiseksi allokointimetodi tuottaa vain kaksi `GradingTask`-oliota (ja täten tarvitaan vain kaksi säiettä), toteuta em. main-metodin toimet siten, että et nojaa missään kohtaa siihen, että tehtäviä tai säikeitä on kaksi, vaan käytä perustana esimerkiksi allokointimetodilta saamasi tehtävälistan (`List<GradingTask>`) kokoa.
 
-
 ### Tehtävä 5 - Joukkovoimaa
 Aiemman tehtävän allokointimetodi oltiin kovakoodattu jakamaan palautuslista aina kahteen osaan. Toteuta `TaskAllocator`-luokan sisään metodi `public static List<GradingTask> allocate(List<Submission> submissions, int taskCount)`, siten, että se pystyy jakamaan annetut palautukset `taskCount`-muuttujan määrittämään määrään osia. Eli esimerkiksi mikäli `submissions`-listassa on 20 palautusta ja `taskCount` olisi 4, tulisi metodin palauttaa listassa 4 `GradingTask`-oliota, jolla jokaisella on 5 palausta tarkistettavanaan. Vaihda tehtäväkohtainen `main`-metodi käyttämään uutta allokointimetodia ja tarkastele, miten tehtävämäärä vaikuttaa suoritusaikaan. Saatat huomata, että suoritusaika pienenee melko lailla, vaikka säikeitä käytettäisiin enemmän kuin koneessasi on prosessoriytimiä. Pohdi, mitä syitä tälle voisi olla.
 
 Vinkki: Mikäli et keksi, miten allokointimetodin voisi toteuttaa, etsi tietoa esimerkiksi [Round-robin item allocation](https://en.wikipedia.org/wiki/Round-robin_item_allocation) -hakusanalla. Vaikka osa selityksistä voi vaikuttaa hankalilta, algoritmi on käytännössä jo ala-asteelta tuttu ryhmittäytymistapa, jossa jaettaessa oppilaat esimerkiksi neljään ryhmään, jokainen huutaa vuorollansa 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, ... jne. Tässä kohtaa pitää vain korvata oppilaat tehtäväpalautusolioilla.
 
 ### Tehtävä 6 - Dynaamiset kaverit
+
 Aiemmissa tehtävissä työnjako on ollut staattista. Tämä tarkoittaa, että palautustyöt on jaettu ennakkoon määrätyn kokoisiin työtehtäviin. Esimerkiksi 20 palautusta on saatettu jakaa neljän tarkistustehtävän kesken siten, että jokainen tehtävä sisältää viisi palautuksentarkistusta. Tämä toimii hyvin, mikäli kaikki tehtävät ovat yhtä haastavia. Mutta entä mikäli tehtävien koko on tuntematon tai esimerkiksi jollekin säikeelle sattuu tulemaan useampia vaativampia tehtäviä? Tällöin vaativat tehtävät saanut säie painii töiden kanssa yksin muiden säikeiden ollessa jo kauan kuolleita. Mikäli työtehtävät voitaisiin jakaa säikeille sen mukaan kuin säikeet saavat aiemman työtehtävän valmiiksi, saataisiin hyötysuhdetta parannettua. Tällaista mallia kutsutaan dynaamiseksi työnjaoksi.
 
 Luennolla sivuttiin Javan `ExecutorService`-rajapintaa. Kyseisen rajapinnan implementoivat luokat mahdollistavat dynaamisen työnjaon implementoinnin suhteellisen vaivattomasti. Lyhyesti idea ExecutorServicessä on, että rajapinnan olioiden `execute` metodille voidaan antaa `Runnable`-olioita ja ExecutorService hoitaa näiden suorittamisen tietyllä tavalla. Se, millä tavalla Runnable-oliot ajetaan, riippuu ExecuterServicen implementoivasta luokasta. Esimerkiksi FixedThreadPool-implementaatiolla on mahdollista määrittää samanaikaisten säikeiden määrä. Kun oliolle lähetetään `execute`-metodin avulla `Runnable`-olioita, odottavat oliot jonossa, kunnes uusi säie vapautuu ja tällöin tehtävä suoritetaan. `Executors`-luokka sisältää tehdasmetodeja erilaisten `ExecutorService`-olioiden luontiin.
@@ -98,5 +98,7 @@ Toteuta tehtävientarkistaja `FixedThreadPool`:ia käyttäen. Dynaamista työnja
 
 - ExecutorService-rajapinta: <https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/ExecutorService.html>
 - Executors-luokka, joka sisältää tehdasmetodit erityyppisten ExecutorService-olioiden luontiin: <https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/util/concurrent/Executors.html)>
+
+**Vinkki**: Tehtävä 6:en voi suorittaa ilman, että tehtävän 4 tai 5 alloikoijia on toteutettu. Tällöin "allokointi" voidaan toteuttaa siten, että jokaista `Submission`-oliota kohden luodaan yksi `GradingTask`-olio. Tällaisen allokoijan teko pitäisi olla yksinkertaista. Mikäli tehtävä 5 on toteutettu, voit käyttää sitä allokointiin suoraan.
 
 
